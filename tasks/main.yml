@@ -1,0 +1,41 @@
+---
+- name: Install dependencies
+  apt: name="{{item}}" update_cache=yes state=present
+  loop:
+    - libc6:i386 
+    - libncurses5:i386 
+    - libstdc++6:i386 
+    - zlib1g:i386
+
+- name: Download server tarball
+  get_url:
+    url: http://dedcon.simamo.de/bin/dedcon-i686-pc-linux-gnu-1.6.0_svn1038.tar.bz2
+    dest: /tmp/dedcon.tar.bz2
+    mode: '0440'
+- name: Extract archive
+  unarchive:
+    src: /tmp/dedcon.tar.bz2
+    dest: /srv
+    remote_src: yes
+- name: Create symbolic link 
+  file:
+    src: "/srv/dedcon-i686-pc-linux-gnu-1.6.0_svn1038"
+    dest: "/srv/dedcon"
+    state: link
+- name: Create a login user
+  user:
+   name: dedcon
+   groups:
+    - daemon
+   state: present
+   shell: /bin/nologin
+   system: no
+   createhome: yes
+   home: /srv/dedcon
+- name: create directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0775
+  loop:
+     - /srv/dedcon/dir
