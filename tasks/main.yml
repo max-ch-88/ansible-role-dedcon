@@ -1,4 +1,10 @@
 ---
+- ansible.builtin.assert:
+    that:
+      - ansible_os_family in ['Debian','RedHat']
+    success_msg: "This is {{ ansible_os_family }} OS family."
+    fail_msg: "This role is designed for the RedHat and Debian OS families only."
+
 - name: Install dependencies. Debian
   when: ansible_os_family == 'Debian'
   apt:
