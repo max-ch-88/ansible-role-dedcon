@@ -8,7 +8,7 @@ lint: |
   flake8
 platforms:
   - name: ansible-role-test
-    image: "geerlingguy/docker-debian9-ansible"
+    image: "geerlingguy/docker-debian10-ansible"
     command: ${MOLECULE_COMMAND:-""}
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
