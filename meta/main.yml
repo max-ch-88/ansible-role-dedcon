@@ -1,7 +1,7 @@
 galaxy_info:
-  role_name: ansible-role-{{cookiecutter.setup_name | lower | replace(' ', '_')}}
+  role_name: ansible_role_dedcon
   author: kevit
-  description: This role install {{cookiecutter.setup_name}}
+  description: This role install dedcon
   company: White Horse LLC
   license: MIT
   min_ansible_version: 2.7
