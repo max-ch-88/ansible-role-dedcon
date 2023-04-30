@@ -7,8 +7,15 @@ lint: |
   yamllint . -c molecule/default/yamllint.yml
   flake8
 platforms:
-  - name: ansible-role-test
+  - name: ansible-role-test-debian10
     image: "geerlingguy/docker-debian10-ansible"
+    command: ${MOLECULE_COMMAND:-""}
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    pre_build_image: true
+  - name: ansible-role-test-centos7
+    image: "geerlingguy/docker-centos7-ansible"
     command: ${MOLECULE_COMMAND:-""}
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
