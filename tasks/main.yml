@@ -2,10 +2,10 @@
 - name: Install dependencies
   apt: name="{{item}}" update_cache=yes state=present
   loop:
-    - libc6:i386 
-    - libncurses5:i386 
-    - libstdc++6:i386 
-    - zlib1g:i386
+    - libc6
+    - libncurses5
+    - libstdc++6
+    - zlib1g
 
 - name: Download server tarball
   get_url:
