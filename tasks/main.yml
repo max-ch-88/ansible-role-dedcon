@@ -1,11 +1,26 @@
 ---
-- name: Install dependencies
-  apt: name="{{item}}" update_cache=yes state=present
-  loop:
-    - libc6
-    - libncurses5
-    - libstdc++6
-    - zlib1g
+- name: Install dependencies. Debian
+  when: ansible_os_family == 'Debian'
+  apt:
+    name:
+      - libc6
+      - libncurses5
+      - libstdc++6
+      - zlib1g
+    update_cache: yes
+    state: present
+
+- name: Install dependencies. RedHat
+  when: ansible_os_family == 'RedHat'
+  yum:
+    name:
+      - glibc-devel
+      - ncurses-libs
+      - libstdc++
+      - zlib-devel
+      - bzip2
+    update_cache: yes
+    state: present
 
 - name: Download server tarball
   get_url:
