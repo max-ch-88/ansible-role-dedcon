@@ -17,25 +17,25 @@
     src: /tmp/dedcon.tar.bz2
     dest: /srv
     remote_src: yes
-- name: Create symbolic link 
+- name: Create symbolic link
   file:
     src: "/srv/dedcon-i686-pc-linux-gnu-1.6.0_svn1038"
     dest: "/srv/dedcon"
     state: link
 - name: Create a login user
   user:
-   name: dedcon
-   groups:
-    - daemon
-   state: present
-   shell: /bin/nologin
-   system: no
-   createhome: yes
-   home: /srv/dedcon
+    name: dedcon
+    groups:
+      - daemon
+    state: present
+    shell: /bin/nologin
+    system: no
+    createhome: yes
+    home: /srv/dedcon
 - name: create directories
   file:
     path: "{{ item }}"
     state: directory
     mode: 0775
   loop:
-     - /srv/dedcon/dir
+    - /srv/dedcon/dir
