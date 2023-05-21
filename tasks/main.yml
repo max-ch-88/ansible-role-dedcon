@@ -1,11 +1,36 @@
 ---
-- name: Install dependencies
-  apt: name="{{item}}" update_cache=yes state=present
-  loop:
-    - libc6:i386 
-    - libncurses5:i386 
-    - libstdc++6:i386 
-    - zlib1g:i386
+- ansible.builtin.assert:
+    that:
+      - ansible_os_family in ['Debian','RedHat']
+    success_msg: "This is {{ ansible_os_family }} OS family."
+    fail_msg: "This role is designed for the RedHat and Debian OS families only."
+
+- name: Install dependencies. Debian
+  when: ansible_os_family == 'Debian'
+  block:
+    - name: Add i386 architecture. Debian
+      ansible.builtin.command:
+        dpkg --add-architecture i386
+      changed_when: false
+    - name: Install libraries. Debian
+      apt:
+        name:
+          - libc6:i386
+          - libstdc++6:i386
+          - zlib1g:i386
+        update_cache: yes
+        state: present
+
+- name: Install dependencies. RedHat
+  when: ansible_os_family == 'RedHat'
+  yum:
+    name:
+      - glibc-devel.i686
+      - libstdc++.i686
+      - zlib-devel.i686
+      - bzip2
+    update_cache: yes
+    state: present
 
 - name: Download server tarball
   get_url:
@@ -17,25 +42,35 @@
     src: /tmp/dedcon.tar.bz2
     dest: /srv
     remote_src: yes
-- name: Create symbolic link 
+    extra_opts:
+      - '-j'
+- name: Create symbolic link
   file:
     src: "/srv/dedcon-i686-pc-linux-gnu-1.6.0_svn1038"
     dest: "/srv/dedcon"
     state: link
 - name: Create a login user
   user:
-   name: dedcon
-   groups:
-    - daemon
-   state: present
-   shell: /bin/nologin
-   system: no
-   createhome: yes
-   home: /srv/dedcon
+    name: dedcon
+    groups:
+      - daemon
+    state: present
+    shell: /bin/nologin
+    system: no
+    createhome: yes
+    home: /srv/dedcon
 - name: create directories
   file:
     path: "{{ item }}"
     state: directory
     mode: 0775
   loop:
-     - /srv/dedcon/dir
+    - /srv/dedcon/dir
+- name: Get dedcon version
+  ansible.builtin.command:
+    /srv/dedcon/dedcon -v
+  register: version
+  changed_when: false
+- name: Display dedcon version
+  ansible.builtin.debug:
+    msg: "Dedcon {{ version.stdout }}"
